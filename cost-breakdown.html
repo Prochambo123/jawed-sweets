@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Jawed Sweets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4A017;
+            --gold-dark: #B8860B;
+            --gold-light: #F5E6C8;
+            --cream: #FDF8F0;
+            --text: #2C2416;
+            --text-light: #6B5D4F;
+            --white: #FFFFFF;
+            --border: #E8E0D0;
+            --green: #2D7A3A;
+            --red: #C41E3A;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #E8E8E8;
+            color: var(--text);
+            line-height: 1.5;
+        }
+        .invoice-wrapper {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--white);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+        }
+        .invoice-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--white);
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .company-info h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .company-info p {
+            font-size: 12px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .invoice-meta { text-align: right; }
+        .invoice-meta .invoice-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .invoice-meta .invoice-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .invoice-meta .invoice-date {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+        .invoice-body { padding: 40px; }
+        .bill-to { margin-bottom: 32px; }
+        .bill-to h3 {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold-dark);
+            margin-bottom: 8px;
+        }
+        .bill-to .client-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .bill-to .client-details {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        .items-table thead { background: var(--gold-light); }
+        .items-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gold-dark);
+        }
+        .items-table th:last-child,
+        .items-table td:last-child { text-align: right; }
+        .items-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            vertical-align: top;
+        }
+        .items-table .item-name { font-weight: 600; }
+        .items-table .item-desc {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+        .items-table .item-qty { text-align: center; }
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 32px;
+        }
+        .totals-table { width: 280px; }
+        .totals-table tr td {
+            padding: 8px 0;
+            font-size: 13px;
+        }
+        .totals-table tr td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+        .totals-table .grand-total {
+            border-top: 2px solid var(--gold);
+            padding-top: 12px;
+            margin-top: 8px;
+        }
+        .totals-table .grand-total td {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--gold-dark);
+            font-family: 'Playfair Display', serif;
+        }
+        .breakdown-section {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        .breakdown-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--gold-dark);
+        }
+        .breakdown-section ul {
+            list-style: none;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .breakdown-section ul li {
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        .breakdown-section ul li::before {
+            content: '\2022';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+        }
+        .comparison-section {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+        }
+        .comparison-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--gold-dark);
+        }
+        .comparison-table { width: 100%; border-collapse: collapse; }
+        .comparison-table td {
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+        }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table .wp-cost { color: var(--red); }
+        .comparison-table .custom-cost { color: var(--green); font-weight: 600; }
+        .payment-terms {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+        }
+        .payment-terms h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--gold-dark);
+        }
+        .payment-terms ul {
+            list-style: none;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        .payment-terms ul li {
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        .payment-terms ul li::before {
+            content: '\2022';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+        }
+        .invoice-footer {
+            background: var(--cream);
+            padding: 24px 40px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        .invoice-footer p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .invoice-footer .thank-you {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-dark);
+            margin-bottom: 4px;
+        }
+        .print-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--gold);
+            color: var(--white);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(212, 160, 23, 0.4);
+            z-index: 1000;
+        }
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(212, 160, 23, 0.5);
+        }
+        @media print {
+            body { background: white; }
+            .invoice-wrapper { box-shadow: none; margin: 0; max-width: 100%; }
+            .print-btn { display: none; }
+            .invoice-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .items-table thead { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+        @media (max-width: 600px) {
+            .invoice-header { flex-direction: column; gap: 20px; }
+            .invoice-meta { text-align: left; }
+            .invoice-body { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-wrapper">
+        <div class="invoice-header">
+            <div class="company-info">
+                <h1>Jawed Sweets</h1>
+                <p>Main Bazaar, Sillanwali<br>
+                Sargodha, Punjab, Pakistan<br>
+                Phone: +92 300 1234567<br>
+                Email: info@javedsweets.com</p>
+            </div>
+            <div class="invoice-meta">
+                <div class="invoice-title">INVOICE</div>
+                <div class="invoice-number">#JS-2026-001</div>
+                <div class="invoice-date">Date: October 2, 2026</div>
+                <div class="invoice-date">Due: October 9, 2026</div>
+            </div>
+        </div>
+
+        <div class="invoice-body">
+            <div class="bill-to">
+                <h3>Bill To</h3>
+                <div class="client-name">Jawed Sweets</div>
+                <div class="client-details">E-Commerce Website Development Project</div>
+            </div>
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th>Rate (USD)</th>
+                        <th>Amount (USD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="item-name">Development Charges</div>
+                            <div class="item-desc">Complete website design and development</div>
+                        </td>
+                        <td class="item-qty">1</td>
+                        <td>$140.00</td>
+                        <td>$140.00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="item-name">Hosting Charges (Annual)</div>
+                            <div class="item-desc">Free tier hosting — no cost for first year</div>
+                        </td>
+                        <td class="item-qty">1</td>
+                        <td>$30.00</td>
+                        <td>$30.00</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="totals-section">
+                <table class="totals-table">
+                    <tr>
+                        <td>Subtotal</td>
+                        <td>$170.00</td>
+                    </tr>
+                    <tr>
+                        <td>Discount</td>
+                        <td>$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Tax (0%)</td>
+                        <td>$0.00</td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td>Total Due</td>
+                        <td>$170.00</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="breakdown-section">
+                <h3>Development Charges ($140) — What's Included</h3>
+                <ul>
+                    <li>Custom UI/UX design with golden yellow + off-white theme</li>
+                    <li>Fully responsive layout (mobile, tablet, desktop)</li>
+                    <li>Product catalog with images and pricing</li>
+                    <li>Shopping cart with add/remove/quantity</li>
+                    <li>WhatsApp order button integration</li>
+                    <li>Contact form with validation</li>
+                    <li>Testimonials section</li>
+                    <li>FAQ accordion section</li>
+                    <li>Smooth animations and transitions</li>
+                    <li>SEO meta tags and semantic HTML</li>
+                    <li>Cross-browser compatibility</li>
+                    <li>2 revision rounds</li>
+                </ul>
+            </div>
+
+            <div class="breakdown-section">
+                <h3>Hosting Charges ($30/year) — What's Included</h3>
+                <ul>
+                    <li>Free tier hosting (Netlify/Vercel/GitHub Pages)</li>
+                    <li>SSL certificate (HTTPS)</li>
+                    <li>CDN for fast global delivery</li>
+                    <li>99.9% uptime guarantee</li>
+                    <li>Automatic backups</li>
+                    <li>No server maintenance needed</li>
+                </ul>
+            </div>
+
+            <div class="comparison-section">
+                <h3>WordPress vs Custom Build</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <td><strong>WordPress (Hostinger)</strong></td>
+                        <td class="wp-cost">$150/year (hosting only)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Domain</strong></td>
+                        <td class="wp-cost">Not included ($10-15/year extra)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Premium Theme + Plugins</strong></td>
+                        <td class="wp-cost">$50-100 extra</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Annual Maintenance</strong></td>
+                        <td class="wp-cost">$50-100/year</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WordPress Total (Year 1)</strong></td>
+                        <td class="wp-cost"><strong>$210-265</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>This Custom Website</strong></td>
+                        <td class="custom-cost"><strong>$170.00 one-time</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>You Save</strong></td>
+                        <td class="custom-cost"><strong>$40-95</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="payment-terms">
+                <h3>Payment Terms & Conditions</h3>
+                <ul>
+                    <li>50% advance to commence work ($85.00)</li>
+                    <li>50% upon final delivery ($85.00)</li>
+                    <li>Payment methods: JazzCash, EasyPaisa, Bank Transfer</li>
+                    <li>Delivery timeline: 5-7 working days from advance payment</li>
+                    <li>1 year free support and minor updates included</li>
+                    <li>2 revision rounds included in project scope</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="invoice-footer">
+            <p class="thank-you">Thank you for your business!</p>
+            <p>Jawed Sweets — Sillanwali, Sargodha | +92 300 1234567 | info@javedsweets.com</p>
+        </div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Print Invoice</button>
+</body>
+</html>

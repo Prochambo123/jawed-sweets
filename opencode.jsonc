@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "druvex": {
+      "type": "remote",
+      "url": "https://api.druvexlab.com/v1/mcp",
+      "enabled": true,
+      "timeout": 180000,
+      "headers": {
+        "Authorization": "Bearer druv_aa42e4231e8b4953843d376cbf0a4207"
+      }
+    }
+  }
+}
